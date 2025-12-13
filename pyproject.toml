@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "d100-data-utils"
+version = "0.1.0"
+description = "Utilities for loading the UCI stock dataset used in the D100 coursework."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "pandas>=2.2",
+  "ucimlrepo>=0.0.6",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

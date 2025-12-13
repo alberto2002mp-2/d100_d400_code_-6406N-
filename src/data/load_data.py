@@ -10,10 +10,8 @@ from __future__ import annotations
 import pandas as pd
 from ucimlrepo import fetch_ucirepo
 
-stocks = fetch_ucirepo(id=597)
+__all__ = ["load_stocks_dataframe", "load_stock_dataframe"]
 
-
-print(stocks.variables)
 
 def load_stocks_dataframe() -> pd.DataFrame:
     """Return the UCI stock dataset (id=597) as a ``pandas.DataFrame``.
@@ -36,6 +34,12 @@ def load_stocks_dataframe() -> pd.DataFrame:
 
     targets_df = targets if isinstance(targets, pd.DataFrame) else targets.to_frame()
     return pd.concat([features, targets_df], axis=1)
+
+
+def load_stock_dataframe() -> pd.DataFrame:
+    """Alias for ``load_stocks_dataframe`` to match the expected import name."""
+
+    return load_stocks_dataframe()
 
 
 if __name__ == "__main__":
