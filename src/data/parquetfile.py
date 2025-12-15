@@ -8,3 +8,5 @@ saved_path = save_df_clean_as_parquet(df_clean)
 
 print(df_clean.head())
 print(saved_path)
+
+saved_path

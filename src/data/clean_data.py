@@ -77,13 +77,19 @@ def department_numeric(df: pd.DataFrame) -> pd.DataFrame:
             f"Unexpected 'department' values found (cannot map). Values: {bad}"
         )
 
-    # If you want to REPLACE the original column instead of adding a new one,
-    # uncomment the next two lines and remove the 'department_numeric' line above.
-    # out["department"] = out["department_numeric"]
-    # out = out.drop(columns=["department_numeric"])
-
     return out
 
+def fix_department_spelling(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Correct misspelled entries in the 'department' column:
+    changes 'sweing' to 'sewing'.
+    """
+    if "department" not in df.columns:
+        raise KeyError("Column 'department' not found in dataframe.")
+
+    out = df.copy()
+    out["department"] = out["department"].replace({"sweing": "sewing"})
+    return out
 
 def day_numeric(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -150,6 +156,7 @@ def date_datetime(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+
 def clean_all_to_df_clean(df: pd.DataFrame) -> pd.DataFrame:
     """
     Apply all cleaning steps in a consistent order and return df_clean.
@@ -157,16 +164,18 @@ def clean_all_to_df_clean(df: pd.DataFrame) -> pd.DataFrame:
     df_clean = df.copy()
     df_clean = add_0_wip(df_clean)
     df_clean = quarter_numeric(df_clean)
+    df_clean = fix_department_spelling(df_clean)
     df_clean = department_numeric(df_clean)
     df_clean = day_numeric(df_clean)
     df_clean = remove_0_07(df_clean)
     df_clean = date_datetime(df_clean)
+    
     return df_clean
 
 
 def save_df_clean_as_parquet(
     df_clean: pd.DataFrame,
-    filepath: str | Path = Path("data/processed/df_clean.parquet"),
+    filepath: str | Path = Path("package/data/processed/df_clean.parquet"),
 ) -> Path:
     """
     Save df_clean as a parquet file. Returns the resolved path written.
@@ -175,3 +184,4 @@ def save_df_clean_as_parquet(
     path.parent.mkdir(parents=True, exist_ok=True)
     df_clean.to_parquet(path, index=False)
     return path.resolve()
+
