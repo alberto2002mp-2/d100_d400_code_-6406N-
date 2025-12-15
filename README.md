@@ -24,23 +24,23 @@ The utilities live in `src/data`. Run commands from the repo root (or install in
   print(df.head())
   ```
 
-- Create the cleaned dataframe and write it to parquet (`data/processed/df_clean.parquet` by default):
+- Create the cleaned dataframe and write it to parquet (`src/data/clean_data/processed/df_clean.parquet` by default):
   ```python
   from data.load_data import load_local_productivity_dataframe
   from data.clean_data import clean_all_to_df_clean, save_df_clean_as_parquet
 
-  df_raw = load_local_productivity_dataframe()
-  df_clean = clean_all_to_df_clean(df_raw)
+  df = load_local_productivity_dataframe()
+  df_clean = clean_all_to_df_clean(df)
   parquet_path = save_df_clean_as_parquet(df_clean)
   print(parquet_path)
   ```
-  (You can also run `python src/data/parquetfile.py` to do this end to end.)
+  (You can also run `python src/data/clean_data/processed/df_clean.parquet` to do this end to end.)
 
 - Load the cleaned parquet back into a dataframe:
    
   ```python
     import pandas as pd
-    df1 = pd.read_parquet("package/data/processed/df_clean.parquet")
+    df1 = pd.read_parquet("src/data/clean_data/processed/df_clean.parquet")
     
 
     # Jupter notebook
@@ -52,15 +52,14 @@ The utilities live in `src/data`. Run commands from the repo root (or install in
         start = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
 
         for base in (start, *start.parents):
-            parquet_path = base / "package" / "data" / "processed" / "df_clean.parquet"
+            parquet_path = base / "src" / "data" / "clean_data" / "processed" / "df_clean.parquet"
             if parquet_path.exists():
                 return pd.read_parquet(parquet_path)
 
-        raise FileNotFoundError("Could not find package/data/processed/df_clean.parquet relative to this location.")
+        raise FileNotFoundError("Could not find src/data/clean_data/processed/df_clean.parquet relative to this location.")
 
     # Run it on any notebook:
     df1 = load_df1_clean()
-    df1.head()
 
 
 ## Description of variables in dataset

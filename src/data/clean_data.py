@@ -175,7 +175,7 @@ def clean_all_to_df_clean(df: pd.DataFrame) -> pd.DataFrame:
 
 def save_df_clean_as_parquet(
     df_clean: pd.DataFrame,
-    filepath: str | Path = Path("package/data/processed/df_clean.parquet"),
+    filepath: str | Path = Path("src/data/clean_data/processed/df_clean.parquet"),
 ) -> Path:
     """
     Save df_clean as a parquet file. Returns the resolved path written.
