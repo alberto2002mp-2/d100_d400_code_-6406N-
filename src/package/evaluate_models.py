@@ -8,6 +8,7 @@ from typing import Any, Dict, Tuple
 
 import joblib
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 from package.models.model_training import (
@@ -75,6 +76,11 @@ def plot_predictions(
     min_val = min(y_true.min(), y_pred.min())
     max_val = max(y_true.max(), y_pred.max())
     ax.plot([min_val, max_val], [min_val, max_val], color="red", linestyle="--", label="Ideal 45deg")
+
+    # Fit and plot regression line of predicted vs actual.
+    slope, intercept = np.polyfit(y_true, y_pred, deg=1)
+    xs = np.linspace(min_val, max_val, 100)
+    ax.plot(xs, slope * xs + intercept, color="green", linestyle="-", label="Regression line")
 
     ax.set_xlabel("Actual productivity")
     ax.set_ylabel("Predicted productivity")
