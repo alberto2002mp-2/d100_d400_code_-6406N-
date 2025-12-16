@@ -1,55 +1,66 @@
 # d100_d400_code_6406N
 Predicting labour productivity of manufacturing workers.
 
-## Environment
-- Create the conda env: `conda env create -f environment.yml`
-- Activate it: `conda activate d100_env`
-- Optional for imports anywhere: `pip install -e .`
+Anaconda should be installed in the PC
+Run conda activate d100_env as a bash prompt on the terminal so all code can run based on this python interpreter
 
-## Data sources
-- Primary raw file: `garments_worker_productivity.csv` (bundled at the repo root).
-- If it is missing, download the same CSV and place it at the repo root with that exact name.
-- An optional UCI stock dataset (id=597) remains available via `ucimlrepo` for experimentation.
+## Load the data
 
-## Loading data
-- Preferred loader (uses the bundled garments CSV, then falls back to UCI if needed):
-  ```python
-  from data.load_data import load_data
+The utilities live in `src/data`. Run commands from the repo root (or install in editable mode with `pip install -e .` so `data.*` imports work anywhere).
 
-  df = load_data()
-  print(df.head())
-  ```
-- Explicit local read:
+- Load the raw CSV bundled with the repo:
   ```python
   from data.load_data import load_local_productivity_dataframe
 
   df = load_local_productivity_dataframe()
+  print(df.head())
   ```
-- UCI stock dataset example:
+
+- Load the stock dataset from UCI (falls back to the CSV if download fails):
   ```python
-  from data.load_data import load_stocks_dataframe
+  from data.load_data import load_dataframe
 
-  df_stock = load_stocks_dataframe()
+  df = load_dataframe()
+  print(df.head())
   ```
 
-## Cleaned dataset
-- Build the cleaned parquet (`src/data/clean_data/processed/df_clean.parquet`) from the bundled CSV:
-  ```
-  python -m data.parquetfile
-  ```
-- Or in code:
+- Create the cleaned dataframe and write it to parquet (`src/data/clean_data/processed/df_clean.parquet` by default):
   ```python
-  from data.parquetfile import build_clean_parquet
+  from data.load_data import load_local_productivity_dataframe
+  from data.clean_data import clean_all_to_df_clean, save_df_clean_as_parquet
 
-  parquet_path = build_clean_parquet()
+  df = load_local_productivity_dataframe()
+  df_clean = clean_all_to_df_clean(df)
+  parquet_path = save_df_clean_as_parquet(df_clean)
   print(parquet_path)
   ```
-- Load the cleaned parquet:
-  ```python
-  import pandas as pd
+  (You can also run `python src/data/clean_data/processed/df_clean.parquet` to do this end to end.)
 
-  df_clean = pd.read_parquet("src/data/clean_data/processed/df_clean.parquet")
-  ```
+- Load the cleaned parquet back into a dataframe:
+   
+  ```python
+    import pandas as pd
+    df1 = pd.read_parquet("src/data/clean_data/processed/df_clean.parquet")
+    
+
+    # Jupter notebook
+    from pathlib import Path
+    import pandas as pd
+
+    def load_df1_clean() -> pd.DataFrame:
+        # Start from the file’s directory if __file__ exists, otherwise from the CWD (e.g., in notebooks)
+        start = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
+
+        for base in (start, *start.parents):
+            parquet_path = base / "src" / "data" / "clean_data" / "processed" / "df_clean.parquet"
+            if parquet_path.exists():
+                return pd.read_parquet(parquet_path)
+
+        raise FileNotFoundError("Could not find src/data/clean_data/processed/df_clean.parquet relative to this location.")
+
+    # Run it on any notebook:
+    df1 = load_df1_clean()
+
 
 ## Description of variables in dataset
 01 date                   : Date in MM-DD-YYYY  
@@ -67,3 +78,5 @@ Predicting labour productivity of manufacturing workers.
 13 idle_time              : The amount of time when the production was interrupted due to several reasons  
 14 idle_men               : The number of workers who were idle due to production interruption  
 15 actual_productivity    : The actual % of productivity that was delivered by the workers. It ranges from 0-1.
+
+
