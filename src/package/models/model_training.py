@@ -302,7 +302,7 @@ def run_training(
     joblib.dump(tuned_lgbm, output_path / "lgbm_model.joblib")
     joblib.dump({"X_test": X_test, "y_test": y_test}, output_path / "test_data.joblib")
 
-    metrics_payload = {"ridge": glm_metrics, "lgbm": lgbm_metrics}
+    metrics_payload = {"elasticnet": glm_metrics, "lgbm": lgbm_metrics}
     with (output_path / "metrics.json").open("w", encoding="utf-8") as f:
         json.dump(metrics_payload, f, indent=2)
 
