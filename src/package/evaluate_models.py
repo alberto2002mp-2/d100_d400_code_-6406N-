@@ -46,6 +46,13 @@ def load_models_and_test_data(
     return glm_model, lgbm_model, test_data
 
 
+def _ensure_dataframe(X: Any, columns: pd.Index) -> pd.DataFrame:
+    """Coerce input into a DataFrame with expected columns to avoid feature-name warnings."""
+    if isinstance(X, pd.DataFrame):
+        return X
+    return pd.DataFrame(X, columns=columns)
+
+
 def format_metrics(metrics: Dict[str, float]) -> str:
     """Return a compact string for RMSE, MAE, and R^2."""
     return (
@@ -97,8 +104,11 @@ def evaluate_saved_models(
     _, X_test_split, _, y_test_split = load_clean_and_split(parquet_path, seed)
     glm_model, lgbm_model, test_data = load_models_and_test_data(output_dir)
 
-    X_test = test_data.get("X_test", X_test_split)
-    y_test = test_data.get("y_test", y_test_split)
+    X_test_raw = test_data.get("X_test", X_test_split)
+    y_test_raw = test_data.get("y_test", y_test_split)
+
+    X_test = _ensure_dataframe(X_test_raw, X_test_split.columns)
+    y_test = pd.Series(y_test_raw, name="actual")
 
     if len(y_test) != len(y_test_split):
         logger.info(
@@ -114,10 +124,16 @@ def evaluate_saved_models(
     lgbm_metrics = evaluate_regression(y_test, lgbm_pred)
 
     glm_fig, glm_plot_path = plot_predictions(
-        pd.Series(y_test, name="actual"), pd.Series(glm_pred, name="glm_pred"), "glm", Path(output_dir) / "evaluation"
+        y_test,
+        pd.Series(glm_pred, name="glm_pred"),
+        "glm",
+        Path(output_dir) / "evaluation",
     )
     lgbm_fig, lgbm_plot_path = plot_predictions(
-        pd.Series(y_test, name="actual"), pd.Series(lgbm_pred, name="lgbm_pred"), "lgbm", Path(output_dir) / "evaluation"
+        y_test,
+        pd.Series(lgbm_pred, name="lgbm_pred"),
+        "lgbm",
+        Path(output_dir) / "evaluation",
     )
 
     results = {
