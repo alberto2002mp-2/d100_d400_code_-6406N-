@@ -18,6 +18,7 @@ from package.feature_importance import (
     load_artifacts,
 )
 from package.models.model_training import DEFAULT_OUTPUT_DIR
+from package.version_check import ensure_sklearn_version
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +55,7 @@ def plot_lgbm_pdp(
     kind: str = "average",
 ) -> Tuple[plt.Figure, Path, list[str]]:
     """Create and save PDPs for the top LightGBM features, overlaying ElasticNet."""
+    ensure_sklearn_version()
     artifacts = load_artifacts(output_dir)
     lgbm_model = artifacts["lgbm_model"]
     glm_model = artifacts["glm_model"]

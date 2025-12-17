@@ -14,6 +14,7 @@ from package.models.model_training import (
     DEFAULT_OUTPUT_DIR,
     DEFAULT_SEED,
 )
+from package.version_check import ensure_sklearn_version
 
 logger = logging.getLogger(__name__)
 
@@ -100,6 +101,7 @@ def summarize_differences(glm_df: pd.DataFrame, lgbm_df: pd.DataFrame, top_n: in
 
 def main(output_dir: str | Path = DEFAULT_OUTPUT_DIR, top_n: int = 10) -> None:
     logging.basicConfig(level=logging.INFO)
+    ensure_sklearn_version()
     artifacts = load_artifacts(output_dir)
     glm_pipeline = artifacts["glm_model"]
     lgbm_pipeline = artifacts["lgbm_model"]

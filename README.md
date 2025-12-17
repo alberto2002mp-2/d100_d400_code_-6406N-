@@ -1,8 +1,13 @@
 # d100_d400_code_6406N
 Predicting labour productivity of manufacturing workers.
 
-Anaconda should be installed in the PC
-Run conda activate d100_env as a bash prompt on the terminal so all code can run based on this python interpreter
+Anaconda should be installed in the PC. Use the provided environment to keep library versions consistent (notably scikit-learn 1.6.x used for training the saved models):
+
+```bash
+conda env update -f environment.yml --prune
+conda activate d100_env
+```
+Avoid running the code in environments with older scikit-learn (e.g., 1.4.x), or retrain the models if you do.
 
 ## Load the data
 

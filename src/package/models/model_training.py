@@ -29,6 +29,8 @@ from sklearn.model_selection import KFold, RandomizedSearchCV, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
+from package.version_check import ensure_sklearn_version
+
 
 DEFAULT_SEED = 42
 TARGET_COLUMN = "actual_productivity"
@@ -341,6 +343,7 @@ def load_training_outputs(output_dir: str | Path = DEFAULT_OUTPUT_DIR) -> Dict[s
 def main() -> None:
     """Execute full training when run as a script."""
     logging.basicConfig(level=logging.INFO)
+    ensure_sklearn_version()
     try:
         run_training()
     except Exception as exc:  # noqa: BLE001

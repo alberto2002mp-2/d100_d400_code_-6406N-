@@ -20,6 +20,7 @@ from package.models.model_training import (
     load_df_clean,
     split_random_numeric,
 )
+from package.version_check import ensure_sklearn_version
 
 logger = logging.getLogger(__name__)
 
@@ -107,6 +108,7 @@ def evaluate_saved_models(
     Returns a dictionary keyed by model name with metrics, predictions, and plot paths
     so the function can be reused from notebooks.
     """
+    ensure_sklearn_version()
     _, X_test_split, _, y_test_split = load_clean_and_split(parquet_path, seed)
     glm_model, lgbm_model, test_data = load_models_and_test_data(output_dir)
 
