@@ -1,6 +1,8 @@
 # d100_d400_code_6406N
 Predicting labour productivity of manufacturing workers.
 
+A. Installation instructions: 
+
 Anaconda should be installed in the PC. Use the provided environment to keep library versions consistent (notably scikit-learn 1.6.x used for training the saved models):
 
 ```bash
@@ -65,6 +67,14 @@ The utilities live in `src/data`. Run commands from the repo root (or install in
 
     # Run it on any notebook:
     df1 = load_df1_clean()
+
+
+B. Running code instructions:
+
+Run any scripts or notebooks (recommended) to see the output of the code. Select d100_env as kernel
+
+Run pytest as a bash prompt in the terminal to check that tests are passed or not 
+
 
 
 ## Description of variables in dataset
